@@ -1,18 +1,31 @@
 package com.BikkadIT.ElectronicStroe.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "category")
+@Table(name = "categorires")
 public class Category {
 
-
+    @Id
     private String categoryId;
 
+    @Column(name = "category_title",length = 25,nullable = false)
     private String title;
 
+    @Column(name = "category_desc",length = 25)
     private String description;
 
-    private String categoryImage;
+    private String coverImage;
 }

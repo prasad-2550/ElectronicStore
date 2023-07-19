@@ -20,11 +20,12 @@ public class FileServiceImpl implements FileService {
         String originalFilename=file.getOriginalFilename();
         logger.info("Filename:{}" +originalFilename);
         String filename = UUID.randomUUID().toString();
-        String extension =originalFilename.substring(originalFilename.lastIndexOf(""));
+        String extension =originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileNameWithExtension=filename+extension;
         String fullPathWithFileName=path+ File.separator+fileNameWithExtension;
         if (extension.equalsIgnoreCase(".png") || extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".jpeg")) {
             File folder = new File(path);
+
             if (!folder.exists()) {
 
                 //create new folder
@@ -35,14 +36,10 @@ public class FileServiceImpl implements FileService {
             return fileNameWithExtension;
 
         } else {
-            throw new BadApiRequest("File with this" + extension + "Not Allowed");
+            throw new BadApiRequest("File with this" + "Not Allowed");
         }
     }
 
-    @Override
-    public InputStream getResource(String path) {
-        return null;
-    }
 
     @Override
     public InputStream getResource(String path,String name) throws FileNotFoundException {

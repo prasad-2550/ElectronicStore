@@ -1,8 +1,10 @@
 package com.BikkadIT.ElectronicStroe.controller;
 
 import com.BikkadIT.ElectronicStroe.dtos.ApiResponseMessage;
+import com.BikkadIT.ElectronicStroe.dtos.ImageResponse;
 import com.BikkadIT.ElectronicStroe.dtos.PageableResponse;
 import com.BikkadIT.ElectronicStroe.dtos.UserDto;
+import com.BikkadIT.ElectronicStroe.services.FileService;
 import com.BikkadIT.ElectronicStroe.services.UserService;
 import com.BikkadIT.ElectronicStroe.services.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +12,20 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -26,6 +36,12 @@ public class UserController {
     Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${user.profile.image.path}")
+    private String imageUploadPath;
 
     //CREATE
     @PostMapping("/")
@@ -99,11 +115,37 @@ public class UserController {
         logger.info("Completed request of search by keyword");
 
         return new ResponseEntity<>(userDtoByKeyword, HttpStatus.OK);
+    }
 
         //upload user image
+        @PostMapping("/image/{userId}")
+        public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage")MultipartFile image, @PathVariable String userId) throws IOException {
 
-        //
+            String imageName = fileService.uploadFile(image, imageUploadPath);
 
+            UserDto user = userService.getUserById(userId);
+
+            user.setImageName(imageName);
+            UserDto userDto = userService.updateUser(user, userId);
+            ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).message("Image upload Successfully").success(true).status(HttpStatus.CREATED).build();
+            return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
+
+
+        }
+
+
+
+
+    //serve user image
+        @GetMapping("/image/{userId}")
+        public void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
+
+        UserDto user = userService.getUserById(userId);
+            logger.info("user image name : ",user.getImageName());
+            InputStream resource = fileService.getResource(imageUploadPath,user.getImageName());
+
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            StreamUtils.copy(resource,response.getOutputStream());
+        }
 
     }
-}

@@ -1,4 +1,5 @@
 package com.BikkadIT.ElectronicStroe.dtos;
+import com.BikkadIT.ElectronicStroe.validate.ImageNameValid;
 import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -28,7 +29,7 @@ public class UserDto {
     @NotBlank(message = "!!Write something about Yourself !!")
     private  String about;
 
-
+    @ImageNameValid
     private String imageName;
 }
 
