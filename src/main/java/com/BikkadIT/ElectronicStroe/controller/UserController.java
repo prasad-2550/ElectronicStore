@@ -6,24 +6,19 @@ import com.BikkadIT.ElectronicStroe.dtos.PageableResponse;
 import com.BikkadIT.ElectronicStroe.dtos.UserDto;
 import com.BikkadIT.ElectronicStroe.services.FileService;
 import com.BikkadIT.ElectronicStroe.services.UserService;
-import com.BikkadIT.ElectronicStroe.services.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -44,6 +39,12 @@ public class UserController {
     private String imageUploadPath;
 
     //CREATE
+
+    /**
+     * @author prasad pawawr
+     * @param userDto
+     * @return user
+     */
     @PostMapping("/")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         logger.info("Initiating request to create user");
@@ -53,6 +54,13 @@ public class UserController {
     }
 
     //update
+
+    /**
+     * @author prasad pawar
+     * @param userId
+     * @param userDto
+     * @return updatedDto
+     */
     @PutMapping("/user/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId,@Valid @RequestBody UserDto userDto) {
 
@@ -64,6 +72,12 @@ public class UserController {
 
 
     //delete
+
+    /**
+     * @author prasad pawar
+     * @param userId
+     * @return delete user
+     */
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId){
         logger.info("Initiating  request to delete userId");
@@ -79,6 +93,15 @@ public class UserController {
     }
 
     // get All
+
+    /**
+     * @author prasad pawar
+     * @param pageNumber
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     @GetMapping
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
@@ -92,12 +115,24 @@ public class UserController {
     }
 
     //get single
+
+    /**
+     * @author prasad pawar
+     * @param userId
+     * @return single category
+     */
     @GetMapping("user/{userId}")
     public ResponseEntity<UserDto> getUsers(@PathVariable String userId){
         logger.info("Initiating request to getUsers");
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
     // get By email
+
+    /**
+     * @author prasad pawar
+     * @param email
+     * @return userByEmail
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         logger.info("Initiating request to get User by email");
@@ -108,6 +143,12 @@ public class UserController {
 
 
     //search user
+
+    /**
+     * @author prasad pawar
+     * @param keywords
+     * @return useer
+     */
     @GetMapping("/search/{keywords}")
     public ResponseEntity<List<UserDto>> getUserByKeyword (@PathVariable String keywords) {
         logger.info("Initiating request to search by keyword");
@@ -117,6 +158,13 @@ public class UserController {
         return new ResponseEntity<>(userDtoByKeyword, HttpStatus.OK);
     }
 
+    /**
+     * @author prasad pawar
+     * @param image
+     * @param userId
+     * @return imageResponce
+     * @throws IOException
+     */
         //upload user image
         @PostMapping("/image/{userId}")
         public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage")MultipartFile image, @PathVariable String userId) throws IOException {
@@ -132,11 +180,14 @@ public class UserController {
 
 
         }
-
-
-
-
     //serve user image
+
+    /**
+     * @author prasad pawar
+     * @param userId
+     * @param response
+     * @throws IOException
+     */
         @GetMapping("/image/{userId}")
         public void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
 
