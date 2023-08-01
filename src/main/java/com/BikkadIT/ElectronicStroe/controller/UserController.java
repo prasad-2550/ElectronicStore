@@ -1,5 +1,6 @@
 package com.BikkadIT.ElectronicStroe.controller;
 
+import com.BikkadIT.ElectronicStroe.config.AppConstant;
 import com.BikkadIT.ElectronicStroe.dtos.ApiResponseMessage;
 import com.BikkadIT.ElectronicStroe.dtos.ImageResponse;
 import com.BikkadIT.ElectronicStroe.dtos.PageableResponse;
@@ -42,6 +43,7 @@ public class UserController {
 
     /**
      * @author prasad pawawr
+     * @apiNote createUser
      * @param userDto
      * @return user
      */
@@ -57,6 +59,7 @@ public class UserController {
 
     /**
      * @author prasad pawar
+     * @apiNote updateUser
      * @param userId
      * @param userDto
      * @return updatedDto
@@ -75,6 +78,7 @@ public class UserController {
 
     /**
      * @author prasad pawar
+     * @apiNote deleteUser
      * @param userId
      * @return delete user
      */
@@ -96,28 +100,31 @@ public class UserController {
 
     /**
      * @author prasad pawar
+     * @apiNote getAllUser
      * @param pageNumber
      * @param pageSize
      * @param sortBy
      * @param sortDir
-     * @return
+     * @return getAllUser
      */
     @GetMapping
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-             @RequestParam(value = "sortBy", defaultValue = "name", required = false) String sortBy,
-             @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+            @RequestParam(value = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstant.PAGE_SIZE, required = false) int pageSize,
+             @RequestParam(value = "sortBy", defaultValue = AppConstant.SORT_BY, required = false) String sortBy,
+             @RequestParam(value = "sortDir", defaultValue = AppConstant.SORT_DIR, required = false) String sortDir
 
     ){
         logger.info("Initiating  request to  getAllUsers");
         return new ResponseEntity<>(userService.getAllUser(pageNumber, pageSize,sortBy,sortDir), HttpStatus.OK);
+
     }
 
     //get single
 
     /**
      * @author prasad pawar
+     * @apiNote getUser
      * @param userId
      * @return single category
      */
@@ -130,6 +137,7 @@ public class UserController {
 
     /**
      * @author prasad pawar
+     * @apiNote getUserByEmail
      * @param email
      * @return userByEmail
      */
@@ -146,6 +154,7 @@ public class UserController {
 
     /**
      * @author prasad pawar
+     * @apiNote getUserByKeyword
      * @param keywords
      * @return useer
      */
@@ -160,6 +169,7 @@ public class UserController {
 
     /**
      * @author prasad pawar
+     * @apiNote uploadUserImage
      * @param image
      * @param userId
      * @return imageResponce
@@ -168,22 +178,24 @@ public class UserController {
         //upload user image
         @PostMapping("/image/{userId}")
         public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage")MultipartFile image, @PathVariable String userId) throws IOException {
-
+            logger.info("Initiating request to upload UserImage");
             String imageName = fileService.uploadFile(image, imageUploadPath);
-
+            logger.info("Initiating request to get userId");
             UserDto user = userService.getUserById(userId);
-
+            logger.info("Initiating request to set userId");
             user.setImageName(imageName);
             UserDto userDto = userService.updateUser(user, userId);
             ImageResponse imageResponse = ImageResponse.builder().imageName(imageName).message("Image upload Successfully").success(true).status(HttpStatus.CREATED).build();
+            logger.info("Completed request to uploadImage");
             return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
-
 
         }
     //serve user image
+    //tt
 
     /**
      * @author prasad pawar
+     * @apiNote serveUserImage
      * @param userId
      * @param response
      * @throws IOException
@@ -192,7 +204,7 @@ public class UserController {
         public void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
 
         UserDto user = userService.getUserById(userId);
-            logger.info("user image name : ",user.getImageName());
+            logger.info("user image name : "+user.getImageName());
             InputStream resource = fileService.getResource(imageUploadPath,user.getImageName());
 
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
