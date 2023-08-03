@@ -191,7 +191,7 @@ public class UserController {
 
         }
     //serve user image
-    //tt
+
 
     /**
      * @author prasad pawar
