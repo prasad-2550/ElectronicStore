@@ -131,6 +131,16 @@ public class ProductController {
 
 
     //get all live
+
+    /**
+     * @author prasad pawar
+     * @apiNote get All Live
+     * @param pageNumber
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     @GetMapping("/live")
     public ResponseEntity<PageableResponse<ProductDto>> getAllLiveProduct(
             @RequestParam(value = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) int pageNumber,
@@ -139,13 +149,21 @@ public class ProductController {
             @RequestParam(value = "sortDir", defaultValue = AppConstant.SORT_DIR, required = false) String sortDir
 
     ){
-        logger.info("Initiating  request to  getAllProduct");
+        logger.info("Initiating  request to  getAllLiveProduct");
         return new ResponseEntity<>(productService.getAllLive(pageNumber, pageSize,sortBy,sortDir), HttpStatus.OK);
     }
 
 
-
-
+    /**
+     * @author prasad pawar
+     * @apiNote search
+     * @param query
+     * @param pageNumber
+     * @param pageSize
+     * @param sortBy
+     * @param sortDir
+     * @return
+     */
     // search
     @GetMapping("/search/{query}")
     public ResponseEntity<PageableResponse<ProductDto>> searchProduct(
@@ -156,41 +174,60 @@ public class ProductController {
             @RequestParam(value = "sortDir", defaultValue = AppConstant.SORT_DIR, required = false) String sortDir
 
     ){
-        logger.info("Initiating  request to  getAllProduct");
+        logger.info("Initiating  request to  searchProduct");
         return new ResponseEntity<>(productService.searchByTitle(query,pageNumber, pageSize,sortBy,sortDir), HttpStatus.OK);
     }
 
     //uploadImage
+
+    /**
+     * @author prasad pawar
+     * @apiNote uploadImage
+     * @param productId
+     * @param image
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/image/{productId}")
     public ResponseEntity<ImageResponse> uploadProductImage(
             @PathVariable String productId,
             @RequestParam ("productImage")MultipartFile image
 
     )throws IOException {
+        logger.info("Initiating  request to  uploadProductImage");
+
         String fileName = fileService.uploadFile(image, imagePath);
         ProductDto productDto = productService.getSingle(productId);
         productDto.setProductImage(fileName);
         ProductDto updated = productService.update(productDto, productId);
 
         ImageResponse response = ImageResponse.builder().imageName(updated.getProductImage())
-                .message("product Image sucessfully Uploaded!!")
+                .message("product Image Uploaded!!")
                 .status(HttpStatus.CREATED)
                 .success(true)
                 .build();
-
+        logger.info("Completed  request to  uploadProductImage");
         return new ResponseEntity<ImageResponse>(response, HttpStatus.CREATED);
     }
         //serve productImage
 
+    /**
+     * @author prasad pawar
+     * @apiNote serveImage
+     * @param productId
+     * @param response
+     * @throws IOException
+     */
         @GetMapping("/image/{productId}")
         public void serveUserImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
-
+            logger.info("Initiating  request to  uploadProductImage");
             ProductDto productDto = productService.getSingle(productId);
             logger.info("user image name : "+productDto.getProductImage());
             InputStream resource = fileService.getResource(imagePath,productDto.getProductImage());
 
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             StreamUtils.copy(resource,response.getOutputStream());
+            logger.info("Completed request of serveImage");
         }
 
     }
