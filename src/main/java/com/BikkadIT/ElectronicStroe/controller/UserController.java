@@ -64,7 +64,7 @@ public class UserController {
      * @param userDto
      * @return updatedDto
      */
-    @PutMapping("/user/{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId,@Valid @RequestBody UserDto userDto) {
 
         logger.info("Initiating request to update userID");
