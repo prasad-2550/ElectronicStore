@@ -141,6 +141,6 @@ public class UserServiceTest {
 
         Assertions.assertEquals(4,searchedUser.size(),"Size Not Match");
 
-
     }
+
 }
