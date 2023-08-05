@@ -45,8 +45,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDto1, HttpStatus.CREATED);
     }
 
-    //update
-
+                               //update
     /**
      * @author prasad pawar
      * @apiNote updateCategory
@@ -63,8 +62,7 @@ public class CategoryController {
         return new ResponseEntity<>(updatedCategory,HttpStatus.OK);
     }
 
-    //delete
-
+                                           //delete
     /**
      * @author prasad pawar
      * @apiNote deleteCategory
@@ -87,7 +85,7 @@ public class CategoryController {
      * @param categoryId
      * @return categoryDto1
      */
-    //get single category
+                            //get single category
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getSingleCategory(@PathVariable String categoryId){
         logger.info("Initiating request to get single category"+categoryId);
@@ -105,7 +103,7 @@ public class CategoryController {
      * @param sortDir
      * @return pageableResponse
      */
-    //get All category
+                                   //get All category
     @GetMapping("/")
     public ResponseEntity<PageableResponse<CategoryDto>> getAll(
                 @RequestParam(value = "pageSize",defaultValue = AppConstant.PAGE_SIZE,required = false)int    pageSize,
@@ -118,8 +116,7 @@ public class CategoryController {
         logger.info("completed request of get all category");
         return new ResponseEntity<>(pageableResponse,HttpStatus.OK);
     }
-    // create product with category
-
+                     // create product with category
     /**
      *
      * @param categoryId
@@ -134,8 +131,7 @@ public class CategoryController {
         ProductDto withCategory = productService.createWithCategory(productDto, categoryId);
         return new ResponseEntity<>(withCategory,HttpStatus.CREATED);
     }
-    // update Category of product
-
+                      // update Category of product
     /**
      * @author prasad pawar
      * @param categoryId
@@ -151,8 +147,7 @@ public class CategoryController {
            return new ResponseEntity<>(productDto,HttpStatus.CREATED);
        }
 
-       // get product of category
-
+                    // get product of category
     /**
      *
      * @param categoryId
